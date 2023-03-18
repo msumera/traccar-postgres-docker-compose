@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: traccar
+      POSTGRES_PASSWORD: traccar
+      POSTGRES_DB: traccar
+    volumes:
+      - traccar-postgres:/var/lib/postgresql/data
+
+  traccar:
+    image: traccar/traccar:latest
+    restart: always
+    ports:
+      - "8082:8082"
+      - "5000-5150:5000-5150"
+    volumes:
+      - ./traccar.xml:/opt/traccar/conf/traccar.xml:ro
+      - traccar-logs:/opt/traccar/logs:rw
+    depends_on:
+      - postgres
+
+volumes:
+  traccar-postgres:
+  traccar-logs:
